@@ -17,7 +17,7 @@ export default function handler(req: Request) {
           background: 'lavender',
         }}
       >
-        Hello OG Image!
+        Hello GH Action!
       </div>
     )
   )
