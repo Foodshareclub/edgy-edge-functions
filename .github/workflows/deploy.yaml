@@ -12,7 +12,9 @@ jobs:
 
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       PROJECT_ID: iazmjdjwnkilycbjwpzp
+      FUNCTION_SECRET: ${{ secrets.FUNCTION_SECRET }}
 
     steps:
       - uses: actions/checkout@v3
