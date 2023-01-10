@@ -18,6 +18,13 @@ bot.command("sendpost", (ctx) => ctx.reply(
   `Sending post! ${new Date()} ${Date.now()}`
 ));
 
+bot.command("test", async (ctx) => {
+  await ctx.reply("Hi! I can only read messages that explicitly reply to me!", {
+    // Make Telegram clients automatically show a reply interface to the user.
+    reply_markup: { force_reply: true },
+  });
+});
+
 // await bot.api.sendMessage(
 //   12345,
 //   '<b>Hi!</b> <i>Welcome</i> to <a href="https://grammy.dev">grammY</a>.',
