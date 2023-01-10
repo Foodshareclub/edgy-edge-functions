@@ -14,7 +14,7 @@ bot.command("start", (ctx) => ctx.reply("Welcome! Bot is up and running."));
 
 bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
 
-bot.command("send-post", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
+bot.command("sendpost", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
 
 const handleUpdate = webhookCallback(bot, "std/http");
 
