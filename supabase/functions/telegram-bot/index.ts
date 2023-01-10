@@ -16,11 +16,11 @@ bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
 
 bot.command("sendpost", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
 
-await bot.api.sendMessage(
-  12345,
-  '<b>Hi!</b> <i>Welcome</i> to <a href="https://grammy.dev">grammY</a>.',
-  { parse_mode: "HTML" },
-);
+// await bot.api.sendMessage(
+//   12345,
+//   '<b>Hi!</b> <i>Welcome</i> to <a href="https://grammy.dev">grammY</a>.',
+//   { parse_mode: "HTML" },
+// );
 
 const handleUpdate = webhookCallback(bot, "std/http");
 
