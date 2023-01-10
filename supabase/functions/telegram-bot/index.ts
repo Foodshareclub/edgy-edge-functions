@@ -26,11 +26,11 @@ bot.command("sendpost", (ctx) => ctx.reply(
 //   { parse_mode: "HTML" },
 // );
 
-// async function sendHelloTo12345() {
-//   await bot.api.sendMessage(FoodSharingClubBot, "<i>Hello!</i>", {
-//     parse_mode: "HTML",
-//   });
-// }
+async function sendHelloToFoodSharingClubBot() {
+  await bot.api.sendMessage(FoodSharingClubBot, "<i>Hello!</i>", {
+    parse_mode: "HTML",
+  });
+}
 
 // bot.command("test", async (ctx) => {
 //   await ctx.reply("Hi! I can only read messages that explicitly reply to me!", {
