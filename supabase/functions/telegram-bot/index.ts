@@ -16,7 +16,6 @@ bot.command("ping", (ctx) => ctx.reply(`Pong! \n${new Date()} ${Date.now()}`));
 
 bot.command("sendpost", (ctx) => ctx.reply(
   `Sending post! ${new Date()} ${Date.now()}`
-  await ctx.reply(message, { parse_mode: 'HTML' })
 ));
 
 // await bot.api.sendMessage(
