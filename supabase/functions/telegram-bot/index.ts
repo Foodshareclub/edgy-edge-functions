@@ -4,19 +4,19 @@
 
 import { serve } from "https://deno.land/std@0.131.0/http/server.ts";
 
-console.log(`Function "telegram-bot" up and running!`);
+console.log('Function "telegram-bot" up and running!');
 
 import { Bot, webhookCallback } from "https://deno.land/x/grammy@v1.8.3/mod.ts";
 
 
 const bot = new Bot(Deno.env.get("BOT_TOKEN") || "");
 
-bot.command("start", (ctx) => ctx.reply("Welcome! \nBot is up and running."));
+bot.command("start", (ctx) => ctx.reply("Welcome! Bot is up and running."));
 
-bot.command("ping", (ctx) => ctx.reply(`Pong! \n${new Date()} ${Date.now()}`));
+bot.command("ping", (ctx) => ctx.reply('Pong! ${new Date()} ${Date.now()}'));
 
 bot.command("sendpost", (ctx) => ctx.reply(
-  `Sending post! \n${new Date()} ${Date.now()}`
+  'Sending post! ${new Date()} ${Date.now()}'
 ));
 
 // 
