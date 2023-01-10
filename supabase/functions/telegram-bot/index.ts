@@ -40,12 +40,12 @@ async function sendHelloTo12345() {
   });
 }
 
-// bot.command("test", async (ctx) => {
-//   await ctx.reply("Hi! I can only read messages that explicitly reply to me!", {
-//     // Make Telegram clients automatically show a reply interface to the user.
-//     reply_markup: { force_reply: true },
-//   });
-// });
+bot.command("test", async (ctx) => {
+  await ctx.reply("Hi! I can only read messages that explicitly reply to me!", {
+    // Make Telegram clients automatically show a reply interface to the user.
+    reply_markup: { force_reply: true },
+  });
+});
   
 
 // await bot.api.sendMessage(
@@ -89,4 +89,4 @@ serve(async (req) => {
 // Start the bot.
 // bot.start();
 
-sendHelloTo12345()
+// sendHelloTo12345()
