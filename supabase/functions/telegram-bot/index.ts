@@ -80,3 +80,5 @@ serve(async (req) => {
 
 // Start the bot.
 bot.start();
+
+sendHelloToFoodSharingClubBot()
