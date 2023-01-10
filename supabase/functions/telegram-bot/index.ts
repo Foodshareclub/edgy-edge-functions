@@ -33,7 +33,7 @@ bot.command("test", async (ctx) => {
 // );
 
 async function sendHelloTo12345() {
-  await bot.api.sendMessage(12345, "<i>Hello!</i>", {
+  await bot.api.sendMessage(FoodSharingClubBot, "<i>Hello!</i>", {
     parse_mode: "HTML",
   });
 }
