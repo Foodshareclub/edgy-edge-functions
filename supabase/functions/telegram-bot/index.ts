@@ -12,10 +12,10 @@ const bot = new Bot(Deno.env.get("BOT_TOKEN") || "");
 
 bot.command("start", (ctx) => ctx.reply("Welcome! Bot is up and running."));
 
-bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
+bot.command("ping", (ctx) => ctx.reply(`Pong! \n${new Date()} ${Date.now()}`));
 
 bot.command("sendpost", (ctx) => ctx.reply(
-  `Pong! ${new Date()} ${Date.now()}`
+  `Sending post! ${new Date()} ${Date.now()}`
   await ctx.reply(message, { parse_mode: 'HTML' })
 ));
 
