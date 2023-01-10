@@ -25,11 +25,11 @@ bot.command("test", async (ctx) => {
   });
 });
 
-await bot.api.sendMessage(
-  12345,
-  '<b>Hi!</b> <i>Welcome</i> to <a href="https://grammy.dev">grammY</a>.',
-  { parse_mode: "HTML" },
-);
+// await bot.api.sendMessage(
+//   12345,
+//   '<b>Hi!</b> <i>Welcome</i> to <a href="https://grammy.dev">grammY</a>.',
+//   { parse_mode: "HTML" },
+// );
 
 async function sendHelloTo12345() {
   await bot.api.sendMessage(12345, "<i>Hello!</i>", {
