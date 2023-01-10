@@ -11,7 +11,7 @@ import { Bot, webhookCallback } from "https://deno.land/x/grammy@v1.8.3/mod.ts";
 
 const bot = new Bot(Deno.env.get("BOT_TOKEN") || "");
 
-bot.command("start", (ctx) => ctx.reply("Welcome! Bot is up and running."));
+bot.command("start", (ctx) => ctx.reply("Welcome! \nBot is up and running."));
 
 bot.command("ping", (ctx) => ctx.reply(`Pong! \n${new Date()} ${Date.now()}`));
 
@@ -40,12 +40,12 @@ bot.command("sendpost", (ctx) => ctx.reply(
 //   });
 // }
 
-bot.command("test", async (ctx) => {
-  await ctx.reply("Hi! I can only read messages that explicitly reply to me!", {
-    // Make Telegram clients automatically show a reply interface to the user.
-    reply_markup: { force_reply: true },
-  });
-});
+// bot.command("test", async (ctx) => {
+//   await ctx.reply("Hi! I can only read messages that explicitly reply to me!", {
+//     // Make Telegram clients automatically show a reply interface to the user.
+//     reply_markup: { force_reply: true },
+//   });
+// });
   
 
 // await bot.api.sendMessage(
