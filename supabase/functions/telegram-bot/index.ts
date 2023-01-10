@@ -8,6 +8,7 @@ console.log(`Function "telegram-bot" up and running!`);
 
 import { Bot, webhookCallback } from "https://deno.land/x/grammy@v1.8.3/mod.ts";
 
+
 const bot = new Bot(Deno.env.get("BOT_TOKEN") || "");
 
 bot.command("start", (ctx) => ctx.reply("Welcome! Bot is up and running."));
@@ -74,3 +75,6 @@ serve(async (req) => {
     console.error(err);
   }
 });
+
+// Start the bot.
+bot.start();
