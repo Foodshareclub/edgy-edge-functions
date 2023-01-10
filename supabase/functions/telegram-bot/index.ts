@@ -14,7 +14,10 @@ bot.command("start", (ctx) => ctx.reply("Welcome! Bot is up and running."));
 
 bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
 
-bot.command("sendpost", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
+bot.command("sendpost", (ctx) => ctx.reply(
+  `Pong! ${new Date()} ${Date.now()}`
+  await ctx.reply(message, { parse_mode: 'HTML' })
+));
 
 // await bot.api.sendMessage(
 //   12345,
@@ -23,21 +26,21 @@ bot.command("sendpost", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`))
 // );
 
 // Send statistics upon `/stats`
-bot.command('stats', async ctx => {
-  const stats = ctx.session
+// bot.command('stats', async ctx => {
+//   const stats = ctx.session
 
-  // Format stats to string
-  const message = `You sent <b>${
-      stats.messages
-  } messages</b> since I'm here! You edited messages <b>${
-      stats.edits
-  } times</b>—that is <b>${
-      stats.edits / stats.messages
-  } edits</b> per message on average!`
+//   // Format stats to string
+//   const message = `You sent <b>${
+//       stats.messages
+//   } messages</b> since I'm here! You edited messages <b>${
+//       stats.edits
+//   } times</b>—that is <b>${
+//       stats.edits / stats.messages
+//   } edits</b> per message on average!`
 
-  // Send message in same chat using `reply` shortcut. Don't forget to `await`!
-  await ctx.reply(message, { parse_mode: 'HTML' })
-})
+//   // Send message in same chat using `reply` shortcut. Don't forget to `await`!
+//   await ctx.reply(message, { parse_mode: 'HTML' })
+// })
 
 const handleUpdate = webhookCallback(bot, "std/http");
 
