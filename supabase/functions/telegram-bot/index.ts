@@ -32,6 +32,14 @@ async function sendHelloToFoodSharingClubBot() {
   });
 }
 
+async function sendHelloTo12345() {
+  await bot.api.raw.sendMessage({
+    chat_id: Deno.env.get("CHAT_ID"),
+    text: "<i>Hello!</i>",
+    parse_mode: "HTML",
+  });
+}
+
 // bot.command("test", async (ctx) => {
 //   await ctx.reply("Hi! I can only read messages that explicitly reply to me!", {
 //     // Make Telegram clients automatically show a reply interface to the user.
@@ -81,4 +89,4 @@ serve(async (req) => {
 // Start the bot.
 bot.start();
 
-bot.sendHelloToFoodSharingClubBot()
+// bot.sendHelloToFoodSharingClubBot()
