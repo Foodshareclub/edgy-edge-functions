@@ -87,6 +87,6 @@ serve(async (req) => {
 });
 
 // Start the bot.
-// bot.start();
+bot.start();
 
 // sendHelloTo12345()
