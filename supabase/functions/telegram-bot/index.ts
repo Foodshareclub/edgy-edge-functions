@@ -2,34 +2,91 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-import { serve } from "https://deno.land/std@0.131.0/http/server.ts"
+import { serve } from "https://deno.land/std/http/server.ts";
 
-console.log(`Function "telegram-bot" up and running!`)
+console.log(`Function "telegram-bot" up and running!`);
 
-import { Bot, webhookCallback } from "https://deno.land/x/grammy@v1.8.3/mod.ts";
+import { Bot, webhookCallback } from "https://deno.land/x/grammy/mod.ts";
 
-const bot = new Bot(Deno.env.get('BOT_TOKEN') || ''); 
 
-bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
+const bot = new Bot(Deno.env.get("BOT_TOKEN") || "");
 
-bot.command('ping', (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`))
+bot.command("start", (ctx) => ctx.reply("Welcome! Bot is up and running."));
+
+bot.command("ping", (ctx) => ctx.reply(`Pong! ${new Date()} ${Date.now()}`));
+
+// bot.command("sendpost", (ctx) => ctx.reply(
+//   `Sending post! ${new Date()} ${Date.now()}`
+// ));
+
+// 
+// await bot.api.sendMessage(
+//   12345,
+//   '<b>Hi!</b> <i>Welcome</i> to <a href="https://grammy.dev">grammY</a>.',
+//   { parse_mode: "HTML" },
+// );
+
+// async function sendHelloToFoodSharingClubBot() {
+//   await bot.api.sendMessage(FoodSharingClubBot, "<i>Hello!</i>", {
+//     parse_mode: "HTML",
+//   });
+// }
+
+// async function sendHelloTo12345() {
+//   await bot.api.raw.sendMessage({
+//     chat_id: Deno.env.get("CHAT_ID"),
+//     text: "<i>Hello!</i>",
+//     parse_mode: "HTML",
+//   });
+// }
+
+// bot.command("test", async (ctx) => {
+//   await ctx.reply("Hi! I can only read messages that explicitly reply to me!", {
+//     // Make Telegram clients automatically show a reply interface to the user.
+//     reply_markup: { force_reply: true },
+//   });
+// });
+  
+
+// await bot.api.sendMessage(
+//   12345,
+//   '<b>Hi!</b> <i>Welcome</i> to <a href="https://grammy.dev">grammY</a>.',
+//   { parse_mode: "HTML" },
+// );
+
+// Send statistics upon `/stats`
+// bot.command('stats', async ctx => {
+//   const stats = ctx.session
+
+//   // Format stats to string
+//   const message = `You sent <b>${
+//       stats.messages
+//   } messages</b> since I'm here! You edited messages <b>${
+//       stats.edits
+//   } times</b>—that is <b>${
+//       stats.edits / stats.messages
+//   } edits</b> per message on average!`
+
+//   // Send message in same chat using `reply` shortcut. Don't forget to `await`!
+//   await ctx.reply(message, { parse_mode: 'HTML' })
+// })
 
 const handleUpdate = webhookCallback(bot, "std/http");
 
 serve(async (req) => {
   try {
     const url = new URL(req.url);
-    if (url.searchParams.get('secret') !== Deno.env.get('FUNCTION_SECRET')) 
-      return new Response('not allowed', { status: 405 })
+    if (url.searchParams.get("secret") !== Deno.env.get("FUNCTION_SECRET")) {
+      return new Response("not allowed", { status: 405 });
+    }
 
     return await handleUpdate(req);
   } catch (err) {
     console.error(err);
   }
-})
+});
 
-// To invoke:
-// curl -i --location --request POST 'http://localhost:54321/functions/v1/' \
-//   --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24ifQ.625_WdcF3KHqz5amU0x2X5WWHP-OEs_4qj0ssLNHzTs' \
-//   --header 'Content-Type: application/json' \
-//   --data '{"name":"Functions"}'
+// Start the bot.
+// bot.start();
+
+// sendHelloTo12345()
