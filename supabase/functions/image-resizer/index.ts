@@ -2,32 +2,29 @@
 // import { BufReader } from "https://deno.land/std@0.131.0/io/bufio.ts";
 // import { readLine } from "https://deno.land/std@0.131.0/io/util.ts";
 import { config } from "https://deno.land/x/dotenv/mod.ts";
+import { imgproxy } from "https://deno.land/x/imgproxy/mod.ts";
 
 
-const bucketName = 'posts';
-const imageId = '1644347323145739.jpg';
-const imageBuffer = await Deno.readFile("https://iazmjdjwnkilycbjwpzp.supabase.co/storage/v1/object/public/posts/10/1644347323145739.jpg");
-
-const updateImage = async (imageId: string, imageBuffer: Uint8Array) => {
-    const apiKey = config().SUPABASE_ACCESS_TOKEN;
-    const response = await fetch(`https://api.supabase.co/bucket/${bucketName}/${imageId}`, {
-        method: 'PUT',
-        body: imageBuffer,
-        headers: new Headers({
-            'Content-Type': 'image/jpeg',
-            'Authorization': `Bearer ${apiKey}`
-        }),
+interface Event {
+    data: any;
+  }
+  
+  export default async ({ event }: { event: Event }) => {
+    // Get the image file from the event object
+    const image = event.data;
+    
+    // Compress the image using imgproxy
+    const compressedImage = await imgproxy.resize(image, {
+      width: 400,
+      height: 400,
+      quality: 80
     });
-    if (!response.ok) {
-        throw new Error(`Error updating image: ${response.status}`);
-    }
-    console.log("Image updated successfully!");
-};
-
-try {
-    await updateImage(imageId, imageBuffer);
-} catch (error) {
-    console.error(error);
-}
-
+  
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        compressedImage: compressedImage
+      })
+    };
+  };  
 
