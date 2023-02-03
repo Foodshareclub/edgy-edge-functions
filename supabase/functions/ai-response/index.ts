@@ -4,6 +4,8 @@
 
 import { serve } from "https://deno.land/std/http/server.ts";
 
+console.log(`Function "ai-response" up and running!`);
+
 export const corsHeaders = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": "*",
@@ -42,7 +44,7 @@ serve(async (req) => {
     headers: {
       Authorization:
       `Bearer ${Deno.env.get('OPENAI_KEY')}`,
-        "OpenAI-Organization": 'org-n4SHuIV3xqY883QplkzFqnIf',
+        "OpenAI-Organization": 'org-cXs5fw4qLCMxiTG07HKUKCGQ',
         "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
