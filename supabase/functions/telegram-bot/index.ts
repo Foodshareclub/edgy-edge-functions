@@ -92,10 +92,10 @@
 // // sendHelloTo12345()
 
 import { serve } from "https://deno.land/std@0.155.0/http/server.ts";
-
-serve((req: Request) => Response.json({ message: "Hello World" }));
-
 import { Bot } from "https://deno.land/x/grammy/mod.ts";
+
+
+// serve((req: Request) => Response.json({ message: "Hello World" }));
 
 // Create bot object
 const bot = new Bot("1012227612:AAG7GIYQl37WQee_VNWdAsmZFvuWmjac-bw"); // <-- place your bot token inside this string
