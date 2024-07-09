@@ -3,7 +3,9 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 
 const NOMINATIM_BASE_URL = "https://nominatim.openstreetmap.org/search";
 const API_DELAY = 1000; // 1 second delay between API calls
+const BATCH_SIZE = 10; // Reduced batch size
 const USER_AGENT = "Foodshare/1.0 (https://foodshare.club)";
+const FUNCTION_TIMEOUT = 25000; // 25 seconds, slightly less than the Edge Function limit
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -63,8 +65,8 @@ async function geocodeAddress(addressString: string): Promise<any> {
   }
 }
 
-async function updateCoordinates(supabase: any, address: any) {
-  console.log("Updating coordinates for profile_id:", address.profile_id);
+async function processAddress(supabase: any, address: any) {
+  console.log("Processing address for profile_id:", address.profile_id);
 
   if (!address.generated_full_address) {
     console.log("No generated_full_address for profile_id:", address.profile_id);
@@ -117,8 +119,47 @@ async function updateCoordinates(supabase: any, address: any) {
   };
 }
 
+async function processBatch(supabase: any, lastProcessedId: string, lastProcessedTimestamp: string | null) {
+  const startTime = Date.now();
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+  
+  let query = supabase
+    .from('address')
+    .select('profile_id, generated_full_address, lat, long, country, updated_at', { count: 'exact' })
+    .gt('profile_id', lastProcessedId)
+    .order('profile_id')
+    .limit(BATCH_SIZE);
+
+  if (lastProcessedTimestamp) {
+    query = query.or(`updated_at.gt.${lastProcessedTimestamp}`);
+  }
+
+  const { data: addresses, error: fetchError, count } = await query;
+
+  if (fetchError) {
+    console.error("Error fetching addresses:", fetchError.message);
+    throw new Error(fetchError.message);
+  }
+
+  const results = [];
+  for (const addr of addresses) {
+    if (Date.now() - startTime > FUNCTION_TIMEOUT) {
+      console.log("Approaching timeout, stopping batch processing");
+      break;
+    }
+    results.push(await processAddress(supabase, addr));
+    await delay(API_DELAY); // Ensure we don't exceed Nominatim's rate limit
+  }
+
+  const newLastProcessedId = results.length > 0 ? addresses[results.length - 1].profile_id : lastProcessedId;
+  const newLastProcessedTimestamp = results.length > 0 ? addresses[results.length - 1].updated_at : lastProcessedTimestamp;
+  const isComplete = results.length < addresses.length || (addresses.length < BATCH_SIZE && (!newLastProcessedTimestamp || newLastProcessedTimestamp < fiveMinutesAgo));
+
+  return { results, newLastProcessedId, newLastProcessedTimestamp, isComplete, totalCount: count };
+}
+
 serve(async (req) => {
-  console.log("Function started - Updating coordinates");
+  console.log("Function started - Geocoding addresses");
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL');
   const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY');
@@ -131,14 +172,58 @@ serve(async (req) => {
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
   try {
-    const { address } = await req.json();
+    const { address, isBatch, lastProcessedId = '00000000-0000-0000-0000-000000000000', lastProcessedTimestamp = null } = await req.json();
 
     if (address) {
-      console.log("Updating coordinates for single address");
-      const result = await updateCoordinates(supabase, address);
+      // Process single address (for webhook/trigger use)
+      console.log("Processing single address from webhook");
+      const result = await processAddress(supabase, address);
       return new Response(JSON.stringify(result), { status: 200 });
+    } else if (isBatch) {
+      // Process batch
+      let isComplete = false;
+      let results = [];
+      let newLastProcessedId = lastProcessedId;
+      let newLastProcessedTimestamp = lastProcessedTimestamp;
+      let totalCount = 0;
+
+      while (!isComplete) {
+        const batchResult = await processBatch(supabase, newLastProcessedId, newLastProcessedTimestamp);
+        results = results.concat(batchResult.results);
+        newLastProcessedId = batchResult.newLastProcessedId;
+        newLastProcessedTimestamp = batchResult.newLastProcessedTimestamp;
+        isComplete = batchResult.isComplete;
+        totalCount = batchResult.totalCount;
+
+        if (!isComplete) {
+          console.log("Batch processed, continuing with next batch");
+        }
+      }
+
+      // Trigger next batch if there are more addresses to process
+      if (results.length === BATCH_SIZE) {
+        await fetch(req.url, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${supabaseAnonKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ isBatch: true, lastProcessedId: newLastProcessedId, lastProcessedTimestamp: newLastProcessedTimestamp })
+        });
+      }
+
+      return new Response(JSON.stringify({ 
+        message: isComplete ? "All addresses processed" : "Batch processed, next batch triggered",
+        processedCount: results.length,
+        totalCount,
+        lastProcessedId: newLastProcessedId,
+        lastProcessedTimestamp: newLastProcessedTimestamp,
+        isComplete,
+        results 
+      }), { status: 200 });
     } else {
-      return new Response(JSON.stringify({ error: "Invalid request. Address data is required." }), { status: 400 });
+      // Invalid request
+      return new Response(JSON.stringify({ error: "Invalid request. Specify 'address' for single processing or 'isBatch' for batch processing." }), { status: 400 });
     }
   } catch (error) {
     console.error("Unexpected error:", error.message);
