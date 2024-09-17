@@ -42,7 +42,9 @@ async function fetchWithRetry(url: string, maxRetries = 3, initialDelay = 1000):
 
 async function geocodeAddress(addressString: string): Promise<any> {
   console.log(`Geocoding address: ${addressString}`);
-  const encodedAddress = encodeURIComponent(addressString);
+  // Remove apartment numbers and other details that might confuse the geocoder
+  const simplifiedAddress = addressString.replace(/\b(apt\.?|apartment|unit|#)\s*[\w-]+,?/gi, '').trim();
+  const encodedAddress = encodeURIComponent(simplifiedAddress);
   const url = `${NOMINATIM_BASE_URL}?q=${encodedAddress}&format=json&addressdetails=1&limit=1`;
   
   try {
